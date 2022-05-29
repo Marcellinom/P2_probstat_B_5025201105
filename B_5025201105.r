@@ -31,3 +31,23 @@ dataset$JENIS = factor(dataset$JENIS, labels = c("grup 1", "grup 2", "grup 3", "
 grup_1 = subset(dataset, JENIS == "grup 1")
 grup_2 = subset(dataset, JENIS == "grup 2")
 grup_3 = subset(dataset, JENIS == "grup 3")
+
+qqnorm(y = grup_1$V2, ylim = c(0,30))
+qqnorm(y = grup_2$V2, ylim = c(0,30))
+qqnorm(y = grup_3$V2, ylim = c(0,30))
+
+# B. carilah atau periksalah Homogeneity of variances nya
+# hapus 1st row
+dataset = dataset[-1,]
+bartlett.test(V2 ~ V1, data = dataset)
+
+# C. Untuk uji ANOVA (satu arah), buatlah model linier dengan Panjang versus
+# Grup dan beri nama model tersebut model 1.
+model_1 = lm(V2 ~ V1, data = dataset)
+anova = anova(model_1)
+
+# D. Dari Hasil Poin C, Berapakah nilai-p
+tukey = TukeyHSD(aov(model_1))
+
+# F. visualisasikan data dengan ggplot
+ggplot(dataset, aes(x = V1, y = V2)) + geom_boxplot(colour = "black") + scale_x_discrete() + xlab("species") + ylab("length")
